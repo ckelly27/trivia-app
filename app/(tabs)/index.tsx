@@ -6,11 +6,13 @@ export default function LandingScreen() {
 
   const handleEndlessModePress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    console.log('Endless Mode Pressed');
     // Navigate to Endless Mode screen
   }
 
   const handleSurvivalPress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    console.log('Survival Mode Pressed');
     // Navigate to Survival Mode screen
   }
 
