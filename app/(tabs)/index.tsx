@@ -1,7 +1,19 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as Haptics from 'expo-haptics';
 
 export default function LandingScreen() {
+
+  const handleEndlessModePress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    // Navigate to Endless Mode screen
+  }
+
+  const handleSurvivalPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    // Navigate to Survival Mode screen
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -10,14 +22,14 @@ export default function LandingScreen() {
         <View style={styles.modesContainer}>
           <Text style={styles.sectionTitle}>Choose a Mode:</Text>
 
-          <TouchableOpacity style={styles.modeButton}>
+          <TouchableOpacity style={styles.modeButton} onPress={handleEndlessModePress}>
             <Text style={styles.modeTitle}>Endless Mode</Text>
             <Text style={styles.modeDescription}>
               Keep answering questions and track your total score!
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.modeButton}>
+          <TouchableOpacity style={styles.modeButton} onPress={handleSurvivalPress}>
             <Text style={styles.modeTitle}>Survival Mode</Text>
             <Text style={styles.modeDescription}>
               You have 3 lives. Lose one for each incorrect answer!
@@ -37,6 +49,7 @@ export default function LandingScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
+    backgroundColor: '#24bdbf'
   },
   container: {
     flex: 1,
