@@ -1,42 +1,59 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Animated, View, Text, StyleSheet } from 'react-native';
+import React, { useRef } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
+import * as Animatable from 'react-native-animatable';
+import AnimatedButton from '@/components/AnimatedButton';
+import { useRouter } from 'expo-router';
 
 export default function LandingScreen() {
-
+  const router = useRouter();
+  
   const handleEndlessModePress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     console.log('Endless Mode Pressed');
     // Navigate to Endless Mode screen
+    router.push('/modes/endless');
   }
 
   const handleSurvivalPress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     console.log('Survival Mode Pressed');
     // Navigate to Survival Mode screen
+    router.push('/modes/survival');
   }
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <Text style={styles.headerTitle}>Trivia Game</Text>
+        <Animatable.Text
+          animation={{
+            0: { transform: [{ scale: 1 }] },
+            0.5: { transform: [{ scale: 1.1 }] },
+            1: { transform: [{ scale: 1 }] },
+          }}
+          duration={2500}
+          iterationCount="infinite"
+          easing="ease-in-out"
+          style={styles.headerTitle}
+        >
+          Trivia Game
+        </Animatable.Text>
 
         <View style={styles.modesContainer}>
           <Text style={styles.sectionTitle}>Choose a Mode:</Text>
 
-          <TouchableOpacity style={styles.modeButton} onPress={handleEndlessModePress}>
-            <Text style={styles.modeTitle}>Endless Mode</Text>
-            <Text style={styles.modeDescription}>
-              Keep answering questions and track your total score!
-            </Text>
-          </TouchableOpacity>
+          <AnimatedButton
+            title="Endless Mode"
+            description="Keep answering questions and track your total score!"
+            onPress={handleEndlessModePress}
+          />
 
-          <TouchableOpacity style={styles.modeButton} onPress={handleSurvivalPress}>
-            <Text style={styles.modeTitle}>Survival Mode</Text>
-            <Text style={styles.modeDescription}>
-              You have 3 lives. Lose one for each incorrect answer!
-            </Text>
-          </TouchableOpacity>
+          <AnimatedButton
+            title="Survival Mode"
+            description="You have 3 lives. Lose one for each incorrect answer!"
+            onPress={handleSurvivalPress}
+          />
         </View>
 
         <View style={styles.difficultyContainer}>
@@ -51,27 +68,20 @@ export default function LandingScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#24bdbf'
+    backgroundColor: '#4287f5',
   },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 24,
-    backgroundColor: '#24bdbf',
+    backgroundColor: '#4287f5',
   },
   headerTitle: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#1e293b',
+    color: 'white',
     marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#475569',
-    textAlign: 'center',
-    marginBottom: 36,
-    paddingHorizontal: 16,
   },
   modesContainer: {
     width: '100%',
@@ -80,30 +90,27 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#334155',
+    color: 'white',
     marginBottom: 16,
   },
   modeButton: {
     width: '100%',
-    backgroundColor: '#2563eb',
+    backgroundColor: 'white',
     borderRadius: 16,
     paddingVertical: 18,
     paddingHorizontal: 20,
     marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 3,
+    boxShadow: '#000',
   },
   modeTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#fff',
+    color: 'black',
     marginBottom: 6,
   },
   modeDescription: {
     fontSize: 15,
-    color: '#e2e8f0',
+    color: 'black',
   },
   difficultyContainer: {
     marginTop: 40,
@@ -112,11 +119,11 @@ const styles = StyleSheet.create({
   difficultyTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#334155',
+    color: 'white',
     marginBottom: 4,
   },
   difficultyText: {
     fontSize: 15,
-    color: '#475569',
+    color: 'white',
   },
 });
