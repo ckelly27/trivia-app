@@ -5,7 +5,11 @@ import DifficultyDropdown from './DifficultyDropdown';
 import AnimatedButton from './AnimatedButton';
 import * as Animatable from 'react-native-animatable';
 
-export default function Survival() {
+interface SurvivalProps {
+  goHome: () => void;
+}
+
+export default function Survival({ goHome }: SurvivalProps) {
 
     const [selectedCategory, setSelectedCategory] = useState<number>(8);
     const [selectedDifficulty, setSelectedDifficulty] = useState<'any' | 'easy' | 'medium' | 'hard'>('any');
@@ -60,6 +64,12 @@ export default function Survival() {
                 <Text style={styles.difficultyTitle}>Question Point System</Text>
                 <Text style={styles.difficultyText}>Hard: 3 • Medium: 2 • Easy: 1</Text>
             </View>
+
+            <AnimatedButton
+                title="Back to Home"
+                onPress={goHome}
+                style={{ marginTop: 175 }}
+            />
 
         </View>
     );

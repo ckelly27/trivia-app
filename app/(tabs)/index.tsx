@@ -64,12 +64,12 @@ export default function LandingScreen() {
 
       {/* Endless Screen */}
       {mode === "endless" && (
-        <Endless />
+        <Endless goHome={() => setMode("home")}/>
       )}
 
       {/* Survival Screen */}
       {mode === "survival" && (
-        <Survival />
+        <Survival goHome={() => setMode("home")}/>
       )}
       
     </SafeAreaView>
