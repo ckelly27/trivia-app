@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingVertical: 18,
     paddingHorizontal: 20,
-    marginBottom: 20,
+    marginBottom: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15,
@@ -69,9 +69,11 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: 'black',
     marginBottom: 6,
+    textAlign: 'center',
   },
   modeDescription: {
     fontSize: 15,
     color: 'black',
+    textAlign: 'center',
   },
 });

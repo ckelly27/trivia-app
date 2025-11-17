@@ -1,31 +1,34 @@
-import { Animated, View, Text, StyleSheet } from 'react-native';
+import { Animated, View, Text, StyleSheet, Button } from 'react-native';
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import * as Animatable from 'react-native-animatable';
 import AnimatedButton from '@/components/AnimatedButton';
+import Endless from '@/components/endless';
+import Survival from '@/components/survival';
 
 export default function LandingScreen() {
 
-  const [mode, setMode] = useState("home")
+  const [mode, setMode] = useState<"home" | "endless" | "survival">("home");
   
   const handleEndlessModePress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    console.log('Endless Mode Pressed');
     // Navigate to Endless Mode screen
     setMode("endless")
   }
 
   const handleSurvivalPress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    console.log('Survival Mode Pressed');
     // Navigate to Survival Mode screen
     setMode("survival")
   }
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
+
+      {/* Home Screen */}
+      {mode === "home" && (
+        <View style={styles.container}>
         <Animatable.Text
           animation={{
             0: { transform: [{ scale: 1 }] },
@@ -55,12 +58,20 @@ export default function LandingScreen() {
             onPress={handleSurvivalPress}
           />
         </View>
-
-        <View style={styles.difficultyContainer}>
-          <Text style={styles.difficultyTitle}>Question Point System</Text>
-          <Text style={styles.difficultyText}>Hard: 3 • Medium: 2 • Easy: 1</Text>
-        </View>
+        
       </View>
+      )}
+
+      {/* Endless Screen */}
+      {mode === "endless" && (
+        <Endless />
+      )}
+
+      {/* Survival Screen */}
+      {mode === "survival" && (
+        <Survival />
+      )}
+      
     </SafeAreaView>
   );
 }
@@ -81,7 +92,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     color: 'white',
-    marginBottom: 8,
+    marginBottom: 15,
   },
   modesContainer: {
     width: '100%',
