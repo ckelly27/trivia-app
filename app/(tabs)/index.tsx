@@ -1,26 +1,26 @@
 import { Animated, View, Text, StyleSheet } from 'react-native';
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import * as Animatable from 'react-native-animatable';
 import AnimatedButton from '@/components/AnimatedButton';
-import { useRouter } from 'expo-router';
 
 export default function LandingScreen() {
-  const router = useRouter();
+
+  const [mode, setMode] = useState("home")
   
   const handleEndlessModePress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     console.log('Endless Mode Pressed');
     // Navigate to Endless Mode screen
-    router.push('/modes/endless');
+    setMode("endless")
   }
 
   const handleSurvivalPress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     console.log('Survival Mode Pressed');
     // Navigate to Survival Mode screen
-    router.push('/modes/survival');
+    setMode("survival")
   }
 
   return (
