@@ -4,8 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import * as Animatable from 'react-native-animatable';
 import AnimatedButton from '@/components/AnimatedButton';
-import Endless from '@/components/endless';
-import Survival from '@/components/survival';
+import ModeSetup from '@/components/ModeSetup';
 
 export default function LandingScreen() {
 
@@ -64,12 +63,18 @@ export default function LandingScreen() {
 
       {/* Endless Screen */}
       {mode === "endless" && (
-        <Endless goHome={() => setMode("home")}/>
+        <ModeSetup
+          mode="endless"
+          goHome={() => setMode("home")}
+        />
       )}
 
       {/* Survival Screen */}
       {mode === "survival" && (
-        <Survival goHome={() => setMode("home")}/>
+        <ModeSetup
+          mode="survival"
+          goHome={() => setMode("home")}
+        />
       )}
       
     </SafeAreaView>
