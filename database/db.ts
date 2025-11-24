@@ -51,7 +51,7 @@ export const getHighscores = async (
   category?: number,
   difficulty?: string,
 ) => {
-  let query = 'SELECT * FROM highscores ORDER';
+  let query = 'SELECT * FROM highscores';
   const params: (string | number)[] = [];
 
   if (category || difficulty) {

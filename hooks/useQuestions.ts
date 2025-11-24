@@ -34,15 +34,17 @@ export default function useQuestions(endpoint: string) {
     }
   };
 
-  const decodeHtml = (html: string): string => {
-    return html
-      .replace(/&quot;/g, '"')
-      .replace(/&#039;/g, "'")
-      .replace(/&amp;/g, '&')
-      .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>')
-      .replace(/&deg;/g, '°');;
-  };
+ const decodeHtml = (html: string): string => {
+  return html
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/&apos;/g, "'")
+    .replace(/&rsquo;/g, "'") 
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&deg;/g, '°');
+};
 
   const fetchQuestions = async () => {
     setLoading(true);
