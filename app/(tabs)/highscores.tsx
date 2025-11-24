@@ -7,17 +7,17 @@ export default function TabTwoScreen() {
     <SafeAreaView style={styles.safeArea}> 
       <View style={styles.container}>
         <Animatable.Text
-                  animation={{
-                    0: { transform: [{ scale: 1 }] },
-                    0.5: { transform: [{ scale: 1.1 }] }, 
-                    1: { transform: [{ scale: 1 }] },
-                  }}
-                  duration={2500}
-                  iterationCount="infinite"
-                  easing="ease-in-out"
-                  style={styles.headerTitle}>
-                    High Scores
-              </Animatable.Text>
+            animation={{
+              0: { transform: [{ scale: 1 }] },
+              0.5: { transform: [{ scale: 1.1 }] }, 
+              1: { transform: [{ scale: 1 }] },
+            }}
+            duration={2500}
+            iterationCount="infinite"
+            easing="ease-in-out"
+            style={styles.headerTitle}>
+              High Scores
+        </Animatable.Text>
       </View>
     </SafeAreaView>
   );

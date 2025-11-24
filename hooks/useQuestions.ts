@@ -7,78 +7,85 @@ export interface Question {
   question: string;
   correct_answer: string;
   incorrect_answers: string[];
-  // shuffled options for answers
-  options: string[]; 
+  options: string[]; // shuffled options
 }
 
 export default function useQuestions(endpoint: string) {
-
-  // stores array of questions (batches of 10)
   const [questions, setQuestions] = useState<Question[]>([]);
-  // stores index of the question in the array
   const [questionIndex, setQuestionIndex] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  // get initial set of quesions
   useEffect(() => {
-      fetchQuestions();
+    fetchQuestions();
   }, [endpoint]);
 
-  // return an array of the answer options, shuffled
   const shuffleAnswers = (correct: string, incorrect: string[]) => {
-      const all = [...incorrect, correct];
-      return all.sort(() => Math.random() - 0.5);
+    const all = [...incorrect, correct];
+    return all.sort(() => Math.random() - 0.5);
   };
 
   const handleAnswer = () => {
     const nextIndex = questionIndex + 1;
-    if (nextIndex > questions.length) {
+    if (nextIndex >= questions.length) {
       fetchQuestions();
-      // reset question index to 0 upon retrieving new batch
-      setQuestionIndex(0)
-    }
-    // otherwise increment index
-    else {
+      setQuestionIndex(0);
+    } else {
       setQuestionIndex(nextIndex);
     }
-  }
+  };
 
-  // converts html entities to 'normal' text/string
-  const decodeHtml = (html: string) => {
-      const txt = document.createElement('textarea');
-      txt.innerHTML = html;
-      return txt.value;
+  const decodeHtml = (html: string): string => {
+    return html
+      .replace(/&quot;/g, '"')
+      .replace(/&#039;/g, "'")
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&deg;/g, '°');;
   };
 
   const fetchQuestions = async () => {
     setLoading(true);
-
     try {
-        const response = await fetch(endpoint);
-        const data = await response.json();
-        
-        // convert data into array of question objects
-        const formattedQuestions: Question[] = data.results.map((q: any) => ({
+      const response = await fetch(endpoint);
+      const data = await response.json();
+
+      if (!data.results || data.results.length === 0) {
+        console.warn('No questions returned from API:', endpoint);
+        setQuestions([]);
+        return;
+      }
+
+      const formattedQuestions: Question[] = data.results
+        .filter(
+          (q: any) =>
+            q &&
+            q.question &&
+            q.correct_answer &&
+            Array.isArray(q.incorrect_answers)
+        )
+        .map((q: any) => ({
           ...q,
           question: decodeHtml(q.question),
           correct_answer: decodeHtml(q.correct_answer),
-          incorrect_answers: q.incorrect_answers.map((ans: string) => decodeHtml(ans)),
-          options: shuffleAnswers(q.correct_answer, q.incorrect_answers.map((ans: string) => decodeHtml(ans))),
+          incorrect_answers: q.incorrect_answers.map((ans: string) =>
+            decodeHtml(ans)
+          ),
+          options: shuffleAnswers(
+            decodeHtml(q.correct_answer),
+            q.incorrect_answers.map((ans: string) => decodeHtml(ans))
+          ),
         }));
 
-        // set use state of the question array to the newly created one above
-        setQuestions(prev => [...prev, ...formattedQuestions]);
-    }
-    catch (error) {
-      console.log("there was an error: ", error);
-    }
-    finally {
+      setQuestions(formattedQuestions);
+    } catch (error) {
+      console.error('Error fetching questions:', error);
+    } finally {
       setLoading(false);
     }
-  }
+  };
 
   const currentQuestion = questions[questionIndex];
 
   return { currentQuestion, handleAnswer, loading, questionIndex };
 }
-
