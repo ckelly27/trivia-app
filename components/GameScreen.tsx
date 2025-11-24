@@ -1,4 +1,4 @@
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Alert } from 'react-native';
 import { triviaCategories, TriviaCategory } from '@/constants/categories';
 import { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -6,6 +6,7 @@ import useQuestions from '@/hooks/useQuestions';
 import AnimatedButton from './AnimatedButton';
 import * as Animatable from 'react-native-animatable';
 import { TouchableOpacity } from 'react-native';
+import { insertHighscore } from '@/database/db';
 
 interface GameProps {
   mode: 'endless' | 'survival';
@@ -19,23 +20,54 @@ interface GameProps {
 export default function GameScreen({ mode, goHome, category, difficulty, endpoint }: GameProps) {
   const { currentQuestion, handleAnswer, loading, questionIndex } = useQuestions(endpoint);
   console.log("Current question index:", questionIndex);
-  const [lives, setLives] = useState(3)
-  const [points, setPoints] = useState(0)
+  const [lives, setLives] = useState(3);
+  const [points, setPoints] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
+  const [isOver, setIsOver] = useState(false);
+  const [name, setName] = useState("")
+  const [disabledSubmission, setDisableSubmission] = useState(false)
+
+  const handleScoreSubmission = async () => {
+    if (!name) {
+      Alert.alert("Alert!", "You must enter a name!");
+      return;
+    }
+    const success = await insertHighscore(name, category, difficulty, points);
+    if (success) {
+      Alert.alert("Success!", "Your score has been saved!");
+      setDisableSubmission(true)
+    } else {
+      Alert.alert("Error", "There was a problem saving your score. Please try again.");
+    }
+  };
+
+  useEffect(() => {
+    if (lives === 0) {
+        setIsOver(true);
+    }
+  }, [lives]);
 
   const handleOptionPress = (option: string) => {
+    if (isOver || lives === 0) return;
     setSelected(option);
 
-    // delay to show animation, then load next question
     setTimeout(() => {
-      if (option === currentQuestion.correct_answer) {
-        setPoints(prev => prev + (currentQuestion.difficulty === 'hard' ? 3 : currentQuestion.difficulty === 'medium' ? 2 : 1));
+      const isCorrect = option === currentQuestion.correct_answer;
+
+      if (isCorrect) {
+        setPoints(prev => prev + (
+          currentQuestion.difficulty === 'hard' ? 3 :
+          currentQuestion.difficulty === 'medium' ? 2 : 1
+        ));
       } 
       else if (mode === 'survival') {
         setLives(prev => prev - 1);
       }
       setSelected(null);
-      handleAnswer();
+      // move on to next question if game still isnt over
+      if (mode === 'endless' || (mode === 'survival' && lives > 0)) {
+        handleAnswer();
+      }
     }, 1500);
   };
 
@@ -48,8 +80,8 @@ export default function GameScreen({ mode, goHome, category, difficulty, endpoin
       </SafeAreaView>
     )
   }
-  // if current question is nothing, say so, prompt to go home
-  if (!currentQuestion) {
+  // if current question is nothing, say so, give option to go home
+  else if (!currentQuestion) {
     return (
       <SafeAreaView style = {styles.safeArea}>
         <View style = {styles.container}>
@@ -62,7 +94,7 @@ export default function GameScreen({ mode, goHome, category, difficulty, endpoin
       </SafeAreaView>
     )
   }
-  else {
+  else if (!isOver) {
     return (
       <SafeAreaView style = {styles.safeArea}>
         <View style={styles.container}>
@@ -81,10 +113,7 @@ export default function GameScreen({ mode, goHome, category, difficulty, endpoin
 
           <View style={styles.statsContainer}>
             <Text style={styles.statsText}>Lives: {mode === 'survival' ? lives : 'Unlimited'}</Text>
-
-            {mode === 'survival' && (
-              <Text style={styles.statsText}>Points: {points}</Text>
-            )}
+            <Text style={styles.statsText}>Points: {points}</Text>
           </View>
 
           <View style={styles.questionContainer}>
@@ -119,6 +148,50 @@ export default function GameScreen({ mode, goHome, category, difficulty, endpoin
             </View>
           </View>
         
+          <View style={styles.footer}>
+            <AnimatedButton title="Return Home" onPress={goHome} />
+          </View>
+
+        </View>
+      </SafeAreaView>
+    )
+  }
+  // should catch when the game is over (survival)
+  else if (isOver) {
+    return (
+      <SafeAreaView style = {styles.safeArea}>
+        <View style = {styles.container}>
+
+          <Animatable.Text
+              animation={{
+                0: { transform: [{ scale: 1 }] },
+                0.5: { transform: [{ scale: 1.1 }] }, 
+                1: { transform: [{ scale: 1 }] },
+              }}
+              duration={2500}
+              iterationCount="infinite"
+              easing="ease-in-out"
+              style={styles.headerTitle}>
+                Game Over!
+          </Animatable.Text>
+
+          <View style={styles.statsContainer}>
+              <Text style={styles.statsText}>You got {points} point(s)!</Text>
+              <Text style={styles.statsText}>Category: {triviaCategories.find(c => c.id === category)?.name} </Text>
+              <Text style={styles.statsText}>Difficulty: {difficulty} </Text>
+          </View>
+
+          <TextInput 
+            style={styles.nameInput} 
+            placeholder='Enter your name!' 
+            placeholderTextColor={'black'}
+            onChangeText={text => setName(text)}
+            value={name}
+          >
+          </TextInput>
+
+          <AnimatedButton title = "Submit Score" onPress = {handleScoreSubmission} isDisabled = {disabledSubmission}/>
+
           <View style={styles.footer}>
             <AnimatedButton title="Return Home" onPress={goHome} />
           </View>
@@ -212,8 +285,25 @@ const styles = StyleSheet.create({
     textAlign: 'center' 
   },
   footer: { 
-    marginBottom: 30, 
+    marginBottom: 15, 
     width: '100%', 
-    alignItems: 'center' 
-  }
+    alignItems: 'center',
+    marginTop: 150 
+  },
+  nameInput: {
+    width: '80%',
+    backgroundColor: 'white',
+    borderRadius: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    fontSize: 18,
+    color: '#222',
+    textAlign: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 3,
+    marginTop: 20,
+    marginBottom: 20
+  },
 });

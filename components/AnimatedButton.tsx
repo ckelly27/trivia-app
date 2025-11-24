@@ -7,9 +7,10 @@ interface AnimatedButtonProps {
   description?: string;
   onPress?: () => void;
   style?: ViewStyle;
+  isDisabled?: boolean;
 }
 
-const AnimatedButton: React.FC<AnimatedButtonProps> = ({ title, description, onPress, style }) => {
+const AnimatedButton: React.FC<AnimatedButtonProps> = ({ title, description, onPress, style, isDisabled = false }) => {
   const scaleValue = useRef(new Animated.Value(1)).current;
 
   const handlePressIn = () => {
@@ -41,9 +42,10 @@ const AnimatedButton: React.FC<AnimatedButtonProps> = ({ title, description, onP
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         activeOpacity={0.9}
+        disabled={isDisabled}
       >
-        <Text style={styles.modeTitle}>{title}</Text>
-        {description && <Text style={styles.modeDescription}>{description}</Text>}
+        <Text style={[styles.modeTitle, { color: isDisabled ? 'grey' : 'black' }]}>{title}</Text>
+        {description && <Text style={[styles.modeDescription, { color: isDisabled ? 'grey' : 'black' }]}>{description}</Text>}
       </TouchableOpacity>
     </Animated.View>
   );

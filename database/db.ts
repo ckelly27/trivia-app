@@ -22,22 +22,36 @@ export const insertHighscore = async (
   category: number,
   difficulty: string,
   score: number
-) => {
+): Promise<boolean> => {
   const date = new Date().toISOString();
 
-  await db.runAsync(
-    `INSERT INTO highscores (player_name, category, difficulty, score, date_played)
-     VALUES (?, ?, ?, ?, ?)`,
-    [playerName, category, difficulty, score, date]
-  );
+  try {
+    const result = await db.runAsync(
+      `INSERT INTO highscores (player_name, category, difficulty, score, date_played)
+       VALUES (?, ?, ?, ?, ?)`,
+      [playerName, category, difficulty, score, date]
+    );
+    if (result && result.changes > 0) {
+      console.log("Highscore inserted:", result);
+      return true;
+    } else {
+      console.warn("Insert returned no changes:", result);
+      return false;
+    }
+  } catch (error) {
+    console.error("Error inserting highscore:", error);
+    return false;
+  }
 };
+
+
 
 // get highscores with optional filters (category, difficulty, mode)
 export const getHighscores = async (
   category?: number,
   difficulty?: string,
 ) => {
-  let query = 'SELECT * FROM highscores';
+  let query = 'SELECT * FROM highscores ORDER';
   const params: (string | number)[] = [];
 
   if (category || difficulty) {
@@ -53,7 +67,7 @@ export const getHighscores = async (
     }
   }
 
-  query += ' ORDER BY score DESC';
+  query += ' ORDER BY score DESC LIMIT 10';
 
   return await db.getAllAsync(query, params);
 };
