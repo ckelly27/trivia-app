@@ -1,14 +1,9 @@
-import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, StyleSheet, RefreshControl, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Animatable from 'react-native-animatable';
 import { getHighscores } from '@/database/db';
 import { useEffect, useState } from 'react';
 import { triviaCategories } from '@/constants/categories';
-
-interface QueryParams {
-  category?: number;
-  difficulty?: string
-}
 
 interface Highscore {
   id: number;
@@ -20,18 +15,24 @@ interface Highscore {
 
 export default function TabTwoScreen() {
   const [data, setData] = useState<any | Highscore[]>([]);
-  const [params, setParams] = useState<QueryParams | null>(null);
-  // for filters
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
-  const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
+  // for refreshing
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fetchHighScores = async () => {
+    const result = await getHighscores();
+    setData(result);
+  };
+
+  // refresh upon swipe down
+  const onRefresh = async() => {
+    setRefreshing(true)
+    await fetchHighScores();
+    setRefreshing(false)
+  }
 
   useEffect(() => {
-    const fetchHighScores = async () => {
-      const result = await getHighscores(params?.category, params?.difficulty);
-      setData(result);
-    };
     fetchHighScores();
-  }, [params]);
+  }, []);
 
   const renderItem = ({ item, index }: { item: Highscore; index: number }) => (
     <View style={styles.row}>
@@ -59,18 +60,20 @@ export default function TabTwoScreen() {
             iterationCount="infinite"
             easing="ease-in-out"
             style={styles.headerTitle}>
-              High Scores
+              Top 10 High Scores
         </Animatable.Text>
 
+        <Text style={styles.subText}>Swipe down to refresh highscores</Text>
+        
         <FlatList
           data={data}
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderItem}
           style={{ width: '100%', marginTop: 20 }}
+          refreshing={refreshing}
+          onRefresh={onRefresh}
         /> 
         
-           
-
       </View>
     </SafeAreaView>
   );
@@ -133,4 +136,9 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#222',
   },
+  subText: {
+    fontSize: 14,
+    marginTop: 3,
+    color: 'white'
+  }
 });

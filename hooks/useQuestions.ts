@@ -39,11 +39,15 @@ export default function useQuestions(endpoint: string) {
     .replace(/&quot;/g, '"')
     .replace(/&#039;/g, "'")
     .replace(/&apos;/g, "'")
-    .replace(/&rsquo;/g, "'") 
+    .replace(/&rsquo;/g, "'")
     .replace(/&amp;/g, '&')
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
-    .replace(/&deg;/g, '°');
+    .replace(/&deg;/g, '°')
+    .replace(/&Delta;/g, 'Δ') 
+    .replace(/&delta;/g, 'δ')   
+    .replace(/&Pi;/g, 'Π')    
+    .replace(/&pi;/g, 'π');   
 };
 
   const fetchQuestions = async () => {

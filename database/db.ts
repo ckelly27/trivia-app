@@ -44,30 +44,8 @@ export const insertHighscore = async (
   }
 };
 
-
-
-// get highscores with optional filters (category, difficulty, mode)
-export const getHighscores = async (
-  category?: number,
-  difficulty?: string,
-) => {
-  let query = 'SELECT * FROM highscores';
-  const params: (string | number)[] = [];
-
-  if (category || difficulty) {
-    query += ' WHERE';
-    if (category) {
-      query += ' category = ?';
-      params.push(category);
-    }
-    if (difficulty) {
-      if (category) query += ' AND';
-      query += ' difficulty = ?';
-      params.push(difficulty);
-    }
-  }
-
-  query += ' ORDER BY score DESC LIMIT 10';
-
-  return await db.getAllAsync(query, params);
+// get highscores 
+export const getHighscores = async () => {
+  let query = 'SELECT * FROM highscores ORDER BY score DESC LIMIT 10';
+  return await db.getAllAsync(query);
 };
