@@ -1,50 +1,28 @@
-# Welcome to your Expo app 👋
+# Trivia-App 
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+The **Trivia-App** is a React Native application built to provide a fun and interactive trivia experience. Users can play trivia games, track their scores, and compete for high scores, all within a mobile-friendly interface
 
-## Get started
+## Features
+- **Multiple trivia modes**: Includes 24 different game modes for a variety of challenges.  
+- **High score tracking**: Records user scores and tracks progress over time.  
+- **Mobile-first design**: Built with React Native and Expo, optimized for both iOS and Android devices.  
+- **Local persistence**: Saves game progress and scores locally for uninterrupted play.  
 
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
+## Use & Installation
 ```bash
-npm run reset-project
+git clone https://github.com/your-username/trivia-app.git
+cd trivia-app
+npm install
+npx expo start
 ```
+## Running the App
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+1. Start the development server:
+   ``` bash
+   npx expo start --tunnel
+   ```
+3. Open the app on your mobile device using **Expo Go**:
+   - Scan the QR code displayed in your terminal, **or**
+   - Open this link directly in Expo Go: exp://dantt9o-ckelly27-8081.exp.direct
+4. The app will load and run on your device.
 
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
